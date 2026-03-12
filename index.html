@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PT Matematik – Algebra</title>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/jpeg" href="pt_logo.jpg"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -28,16 +29,12 @@
       font-weight: 300;
     }
 
-    body::before {
-      content: '';
+    #honeycomb-bg {
       position: fixed;
       inset: 0;
-      background-color: var(--bg);
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 2 L54 17 L54 47 L28 62 L2 47 L2 17 Z' fill='none' stroke='%23252933' stroke-width='1'/%3E%3Cpath d='M28 52 L54 67 L54 97 L28 112 L2 97 L2 67 Z' fill='none' stroke='%23252933' stroke-width='1'/%3E%3Cpath d='M56 27 L82 42 L82 72 L56 87 L30 72 L30 42 Z' fill='none' stroke='%23252933' stroke-width='1' transform='translate(-28,0)'/%3E%3C/svg%3E");
-      background-size: 56px 100px;
-      opacity: 0.45;
-      pointer-events: none;
       z-index: 0;
+      pointer-events: none;
+      opacity: 0.35;
     }
 
     .wrapper {
@@ -64,11 +61,27 @@
     }
 
     h1 {
-      font-family: 'DM Serif Display', serif;
-      font-size: clamp(2.2rem, 6vw, 3.2rem);
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2rem, 6vw, 3rem);
+      font-weight: 700;
       line-height: 1.1;
       color: var(--text);
       margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .h1-logo {
+      width: 52px;
+      height: 52px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+      box-shadow:
+        0 0 12px rgba(91, 107, 245, 0.6),
+        0 0 28px rgba(91, 107, 245, 0.3),
+        0 0 50px rgba(140, 100, 255, 0.15);
     }
 
     .subtitle {
@@ -276,11 +289,13 @@
   </style>
 </head>
 <body>
+<canvas id="honeycomb-bg"></canvas>
+
 <div class="wrapper">
 
   <header>
     <p class="eyebrow">Digitala övningar</p>
-    <h1>PT Matematik</h1>
+    <h1><img class="h1-logo" src="pt_logo.jpg" alt="PT logo" />PT Matematik</h1>
     <p class="subtitle">Algebra</p>
     <div class="divider"></div>
   </header>
@@ -339,5 +354,45 @@
   </footer>
 
 </div>
+<script>
+  function drawHoneycomb() {
+    const canvas = document.getElementById('honeycomb-bg');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const r = 24;                      // hex radius
+    const w = r * 2;
+    const h = Math.sqrt(3) * r;
+    const cols = Math.ceil(canvas.width  / (w * 1.5)) + 2;
+    const rows = Math.ceil(canvas.height / h) + 2;
+
+    ctx.strokeStyle = '#252933';
+    ctx.lineWidth = 1;
+
+    for (let col = 0; col < cols; col++) {
+      for (let row = 0; row < rows; row++) {
+        const x = col * r * 3;
+        const y = row * h + (col % 2 === 1 ? h / 2 : 0);
+        hexagon(ctx, x, y, r);
+      }
+    }
+  }
+
+  function hexagon(ctx, x, y, r) {
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI / 180) * (60 * i - 30);
+      const px = x + r * Math.cos(angle);
+      const py = y + r * Math.sin(angle);
+      i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  drawHoneycomb();
+  window.addEventListener('resize', drawHoneycomb);
+</script>
 </body>
 </html>
