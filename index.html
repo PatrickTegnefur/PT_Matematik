@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PT Matematik – Algebra</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #0d0f14;
+      --surface: #151820;
+      --border:  #252933;
+      --text:    #e8eaf0;
+      --muted:   #6b7280;
+
+      --c1: #f04f58;   /* coral red – Räkneregler */
+      --c2: #3b82f6;   /* blue    – Balansmetoden */
+      --c3: #10b981;   /* green   – Mönster */
+    }
+
+    html, body {
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-color: var(--bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='100'%3E%3Cpath d='M28 2 L54 17 L54 47 L28 62 L2 47 L2 17 Z' fill='none' stroke='%23252933' stroke-width='1'/%3E%3Cpath d='M28 52 L54 67 L54 97 L28 112 L2 97 L2 67 Z' fill='none' stroke='%23252933' stroke-width='1'/%3E%3Cpath d='M56 27 L82 42 L82 72 L56 87 L30 72 L30 42 Z' fill='none' stroke='%23252933' stroke-width='1' transform='translate(-28,0)'/%3E%3C/svg%3E");
+      background-size: 56px 100px;
+      opacity: 0.45;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrapper {
+      position: relative;
+      z-index: 1;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 80px 24px 100px;
+    }
+
+    /* ── Header ── */
+    header {
+      margin-bottom: 60px;
+      animation: fadeUp 0.55s ease both;
+    }
+
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(2.2rem, 6vw, 3.2rem);
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      font-weight: 400;
+    }
+
+    .divider {
+      width: 36px;
+      height: 2px;
+      background: linear-gradient(90deg, #f04f58, #3b82f6, #10b981);
+      border-radius: 2px;
+      margin-top: 24px;
+    }
+
+    /* ── YouTube pin ── */
+    .yt-pin {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: color-mix(in srgb, #ff0000 10%, var(--surface));
+      border: 1px solid color-mix(in srgb, #ff0000 30%, var(--border));
+      border-radius: 12px;
+      padding: 16px 22px;
+      text-decoration: none;
+      color: var(--text);
+      margin-bottom: 32px;
+      transition: background 0.22s, transform 0.22s, box-shadow 0.22s;
+      animation: fadeUp 0.55s 0.05s ease both;
+    }
+
+    .yt-pin:hover {
+      background: color-mix(in srgb, #ff0000 18%, var(--surface));
+      box-shadow: 0 8px 28px rgba(255,0,0,0.15);
+      transform: translateY(-2px);
+    }
+
+    .yt-icon {
+      width: 38px;
+      height: 38px;
+      background: #ff0000;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+
+    .yt-body { flex: 1; min-width: 0; }
+
+    .yt-label {
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #ff6b6b;
+      margin-bottom: 2px;
+    }
+
+    .yt-title {
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .yt-arrow {
+      font-size: 0.9rem;
+      color: #ff6b6b;
+      transition: transform 0.22s;
+    }
+
+    .yt-pin:hover .yt-arrow { transform: translateX(4px); }
+
+    /* ── Cards ── */
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .card {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--card-color, #555);
+      border-radius: 12px;
+      padding: 22px 26px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 0.22s ease, box-shadow 0.22s ease;
+      animation: fadeUp 0.55s ease both;
+    }
+
+    .card:nth-child(1) { --card-color: var(--c1); animation-delay: 0.10s; }
+    .card:nth-child(2) { --card-color: var(--c2); animation-delay: 0.20s; }
+    .card:nth-child(3) { --card-color: var(--c3); animation-delay: 0.30s; }
+
+    .card:hover { transform: translateY(-3px) translateX(2px); }
+    .card:nth-child(1):hover { box-shadow: 0 10px 36px rgba(240,79,88,0.18); }
+    .card:nth-child(2):hover { box-shadow: 0 10px 36px rgba(59,130,246,0.18); }
+    .card:nth-child(3):hover { box-shadow: 0 10px 36px rgba(16,185,129,0.18); }
+
+    .icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 10px;
+      background: color-mix(in srgb, var(--card-color) 15%, transparent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      transition: background 0.22s;
+    }
+
+    .card:hover .icon {
+      background: color-mix(in srgb, var(--card-color) 28%, transparent);
+    }
+
+    .card-body { flex: 1; min-width: 0; }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .card-desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+
+    .card-arrow {
+      font-size: 1rem;
+      color: var(--muted);
+      flex-shrink: 0;
+      transition: color 0.22s, transform 0.22s;
+    }
+
+    .card:hover .card-arrow {
+      color: var(--card-color);
+      transform: translateX(5px);
+    }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 72px;
+      padding-top: 28px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      animation: fadeUp 0.55s 0.45s ease both;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .footer-left img.pt-logo {
+      height: 44px;
+      width: auto;
+      border-radius: 8px;
+      object-fit: contain;
+    }
+
+    .footer-text { display: flex; flex-direction: column; gap: 2px; }
+
+    .footer-name {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .footer-role {
+      font-size: 0.72rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .footer-right img.ad-logo {
+      height: 36px;
+      width: auto;
+      object-fit: contain;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .footer-right img.ad-logo:hover { opacity: 1; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+<div class="wrapper">
+
+  <header>
+    <p class="eyebrow">Digitala övningar</p>
+    <h1>PT Matematik</h1>
+    <p class="subtitle">Algebra</p>
+    <div class="divider"></div>
+  </header>
+
+  <a class="yt-pin" href="https://youtube.com/playlist?list=PLC0uA88O8pF-jdpKrxPuGWcuUn7woVD-J&si=LMwh5ChVjEJJvEwy" target="_blank" rel="noopener">
+    <div class="yt-icon">▶</div>
+    <div class="yt-body">
+      <div class="yt-label">📌 Videogenomgångar</div>
+      <div class="yt-title">Spellista – Algebra på YouTube</div>
+    </div>
+    <span class="yt-arrow">→</span>
+  </a>
+
+  <div class="cards">
+
+    <a class="card" href="https://patricktegnefur.github.io/Prioriteringsregler/" target="_blank" rel="noopener">
+      <div class="icon">🔢</div>
+      <div class="card-body">
+        <div class="card-title">Räkneregler</div>
+        <div class="card-desc">Prioriteringsregler &amp; beräkningsordning</div>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="card" href="https://patricktegnefur.github.io/algebra_balansmetoden/" target="_blank" rel="noopener">
+      <div class="icon">⚖️</div>
+      <div class="card-body">
+        <div class="card-title">Ekvationer med balansmetoden</div>
+        <div class="card-desc">Lös ekvationer steg för steg med balans i båda led</div>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+    <a class="card" href="https://patricktegnefur.github.io/algebra_Monster/" target="_blank" rel="noopener">
+      <div class="icon">🔷</div>
+      <div class="card-body">
+        <div class="card-title">Mönster</div>
+        <div class="card-desc">Utforska och generalisera talmönster</div>
+      </div>
+      <span class="card-arrow">→</span>
+    </a>
+
+  </div>
+
+  <footer>
+    <div class="footer-left">
+      <img class="pt-logo" src="pt_logo.png" alt="Patrick Tegnefur" />
+      <div class="footer-text">
+        <span class="footer-name">© Patrick Tegnefur</span>
+        <span class="footer-role">Förstelärare i matematik<br>Alfred Dalinskolan</span>
+      </div>
+    </div>
+    <div class="footer-right">
+      <img class="ad-logo" src="ad_colors.png" alt="Alfred Dalinskolan" />
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
